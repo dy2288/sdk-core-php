@@ -33,7 +33,15 @@ class PPOpenIdSession {
 				'scope' => implode(" ", $scope),
 				'redirect_uri' => $redirectUri
 		);
-		return sprintf("%s/v1/authorize?%s", self::getBaseUrl($config), http_build_query($params));
+
+		$params['nonce'] = date("Y-m-d\TH:i:s\Z", time()) . substr(base64_encode(mt_rand()), 0, 15);
+		$params['state'] = sha1(date("Y-m-d\TH:i:s\Z", time()) . substr(base64_encode(mt_rand()), 0, 15));
+		
+		//setcookie("pp_state", $params['state'], time()+3600, '/', true, true);
+
+		return array(
+		        'url' => sprintf("%s/v1/authorize?%s", self::getBaseUrl($config), http_build_query($params)),
+		        'state' => $params['state']);
 	}
 
 
@@ -46,7 +54,7 @@ class PPOpenIdSession {
 	 * @param string $idToken id_token from the TokenInfo object
 	 * @param PayPal/Rest/APIContext $apiContext Optional API Context
 	 */
-	public static function getLogoutUrl($redirectUri, $idToken, $apiContext=null) {
+	public static function getLogoutUrl($redirectUri, $idToken, $state, $apiContext=null) {
 		
 		if(is_null($apiContext)) {
 			$apiContext = new PPApiContext();
@@ -56,6 +64,7 @@ class PPOpenIdSession {
 		$params = array(
 				'id_token' => $idToken,
 				'redirect_uri' => $redirectUri,
+		        'state' => $state,
 				'logout' => 'true'
 		);
 		return sprintf("%s/v1/endsession?%s", self::getBaseUrl($config), http_build_query($params));

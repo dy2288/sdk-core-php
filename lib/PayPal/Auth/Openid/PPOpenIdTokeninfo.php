@@ -133,7 +133,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			
 			if(!array_key_exists('grant_type', $params)) {
 				$params['grant_type'] = 'authorization_code';
-			}	
+			}
 			
 			$call = new PPRestCall($apiContext);
 			$token = new PPOpenIdTokeninfo();
