@@ -24,11 +24,13 @@ class PPOpenIdSession {
 		if(!in_array('openid', $scope)) {
 			$scope[] = 'openid';
 		}
+
 		$params = array(
 				'client_id' => $config['acct1.ClientId'],
 				'response_type' => 'code',
 				'scope' => implode(" ", $scope),
-				'redirect_uri' => $redirectUri
+				'redirect_uri' => $redirectUri,
+				'state' => $config['state']
 		);
 		return sprintf("%s/v1/authorize?%s", self::getBaseUrl($config), http_build_query($params));
 	}
