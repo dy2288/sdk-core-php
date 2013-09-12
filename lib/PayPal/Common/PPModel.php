@@ -47,7 +47,9 @@ class PPModel {
 			if(is_array($v)) {
 				$clazz = PPReflectionUtil::getPropertyClass(get_class($this), $k);
 				
-				if(PPArrayUtil::isAssocArray($v)) {
+				if(false && PPArrayUtil::isAssocArray($v)) {
+					// This seems to be causing trouble: Class 'PayPal\Auth\OpenId\PPOpenIdAddress' not found
+					// Reverting to 'else' seems to work for now. figure out what code does (and if branch actually beneficial) later.
 					$o = new $clazz();
 					$o->fromArray($v);
 					$this->__set($k, $o);
